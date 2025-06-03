@@ -1,0 +1,31 @@
+{
+	"name": "chat-command-api",
+	"version": "1.0.0",
+	"description": "A public API for Twitch chat commands returned as text",
+	"main": "index.js",
+	"scripts": {
+		"dev": "ts-node-dev src/index.ts",
+		"build": "tsc",
+		"start": "node dist/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/marcusmcb/chat-command-api.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/marcusmcb/chat-command-api/issues"
+	},
+	"homepage": "https://github.com/marcusmcb/chat-command-api#readme",
+	"dependencies": {
+		"express": "^5.1.0"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.2",
+		"@types/node": "^22.15.29",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.8.3"
+	}
+}

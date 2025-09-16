@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "ts-node-dev src/index.ts",
 		"build": "tsc",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"heroku-postbuild": "npm run build"
 	},
 	"repository": {
 		"type": "git",
@@ -20,11 +21,14 @@
 	},
 	"homepage": "https://github.com/marcusmcb/chat-command-api#readme",
 	"dependencies": {
-		"express": "^5.1.0"
+		"dotenv": "^17.2.2",
+		"express": "^5.1.0",
+		"tmi.js": "^1.8.5"
 	},
 	"devDependencies": {
 		"@types/express": "^5.0.2",
 		"@types/node": "^22.15.29",
+		"@types/tmi.js": "^1.8.6",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.8.3"
 	}

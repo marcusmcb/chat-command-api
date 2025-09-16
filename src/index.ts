@@ -69,7 +69,7 @@ app.get('/count', (req, res) => {
     // Fire and forget; do not block the HTTP response
     (async () => {
       // optional: initial message
-      await sendChat(`Starting ${capped}s countdown...`);
+      // await sendChat(`Starting ${capped}s countdown...`);
       for (let i = capped; i >= 1; i--) {
         await sendChat(String(i));
         await new Promise((r) => setTimeout(r, 1000));

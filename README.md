@@ -16,13 +16,10 @@ Examples:
 ## Twitch bot (optional)
 
 Set these environment variables to enable chat posting via tmi.js:
-- TWITCH_CHANNEL
-- TWITCH_USERNAME
-- TWITCH_OAUTH_TOKEN (format: oauth:xxxxxxxx)
+ TWITCH_CHANNELS (comma-separated) or TWITCH_CHANNEL
 
 Without these, the API will still respond but won’t post messages in chat.
 
 ## Deploy on Heroku
-
-Procfile uses `web: npm run start`. A `heroku-postbuild` step runs `tsc` to produce `dist/`.
+ - Override target channel (must be configured): /count?duration=10&channel=otherchannel
 Configure env vars in Heroku config vars (Settings -> Config Vars) for the Twitch bot.

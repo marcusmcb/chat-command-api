@@ -1,6 +1,6 @@
 import express from 'express';
 import strains from './strains'
-import { initTwitchClient, sendChat } from './twitchClient'
+import { initTwitchClient, sendChat, sendChatTo, getAllowedChannels } from './twitchClient'
 
 // Load .env locally (Heroku provides env vars in production)
 if (process.env.NODE_ENV !== 'production') {
@@ -65,16 +65,17 @@ app.get('/count', (req, res) => {
   console.log('--------------------------------');
 
   // Kick off async chat countdown (if Twitch client configured)
-  if (process.env.TWITCH_CHANNEL && process.env.TWITCH_USERNAME && process.env.TWITCH_OAUTH_TOKEN) {
+  if ((process.env.TWITCH_CHANNELS || process.env.TWITCH_CHANNEL) && process.env.TWITCH_USERNAME && process.env.TWITCH_OAUTH_TOKEN) {
     // Fire and forget; do not block the HTTP response
     (async () => {
-      // optional: initial message
-      // await sendChat(`Starting ${capped}s countdown...`);
+      const target = (typeof req.query.channel === 'string' && req.query.channel) || getAllowedChannels()[0];
+      // optional: initial message in target channel
+      // await sendChatTo(target, `Starting ${capped}s countdown...`);
       for (let i = capped; i >= 1; i--) {
-        await sendChat(String(i));
+        await sendChatTo(target, String(i));
         await new Promise((r) => setTimeout(r, 1000));
       }
-      await sendChat('Go!');
+      await sendChatTo(target, 'Go!');
     })();
   } else {
     console.log('Twitch env not configured; countdown will not post to chat.');

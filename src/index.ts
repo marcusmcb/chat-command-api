@@ -24,7 +24,7 @@ app.get('/strain', (_req, res) => {
 
 app.get('/urban', (req, res) => {
   console.log("Urban Dictionary request received");
-  console.log(req)
+  console.log(req.url)
 })
 
 app.get('/count', (req, res) => {

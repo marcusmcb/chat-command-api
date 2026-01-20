@@ -22,6 +22,11 @@ app.get('/strain', (_req, res) => {
   res.send(random);
 });
 
+app.get('/urban', (req, res) => {
+  console.log("Urban Dictionary request received");
+  console.log(req)
+})
+
 app.get('/count', (req, res) => {
   // Accepts: GET /count?duration=$(1) from StreamElements
   // duration examples: 10, 30s, 2m, 1h

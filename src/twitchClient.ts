@@ -33,33 +33,9 @@ export function initTwitchClient() {
   client.on('connected', () => console.log('Twitch client connected to channels:', allowedChannels.join(', ')));
   client.on('disconnected', (reason) => console.log('Twitch client disconnected:', reason));
 
-  // Optional: handle !urban directly in chat.
-  // This is useful because StreamElements may not call urlfetch when no args are provided.
-  if (process.env.TWITCH_ENABLE_URBAN_BOT_COMMAND === 'true') {
-    const lastHandledAtByChannel = new Map<string, number>();
-
-    client.on('message', async (channel, _tags, message, self) => {
-      if (self) return;
-      const text = message.trim();
-      if (!text.toLowerCase().startsWith('!urban')) return;
-
-      // Simple per-channel cooldown to prevent spam
-      const now = Date.now();
-      const key = channel.toLowerCase();
-      const last = lastHandledAtByChannel.get(key) ?? 0;
-      if (now - last < 1500) return;
-      lastHandledAtByChannel.set(key, now);
-
-      const args = text.split(/\s+/).slice(1).join(' ').trim();
-      if (!args) {
-        await client?.say(channel, 'Try the urban command again, but enter a term or phrase to search for when you do!');
-        return;
-      }
-
-      const result = await urbanLookup(args);
-      await client?.say(channel, result.message);
-    });
-  }
+  // NOTE: We intentionally do NOT handle `!urban` from Twitch chat here.
+  // The intended architecture is: StreamElements triggers `urlfetch` to this API and posts the result.
+  // If this bot also responds to `!urban`, you will see duplicate messages (StreamElements + this bot).
 
   client.connect().catch((err) => {
     console.error('Failed to connect Twitch client:', err);

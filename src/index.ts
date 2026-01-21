@@ -1,6 +1,7 @@
 import express from 'express';
 import strains from './strains'
 import { initTwitchClient, sendChat, sendChatTo, getAllowedChannels } from './twitchClient'
+import { urbanLookup } from './urban'
 
 // Load .env locally (Heroku provides env vars in production)
 if (process.env.NODE_ENV !== 'production') {
@@ -23,8 +24,25 @@ app.get('/strain', (_req, res) => {
 });
 
 app.get('/urban', (req, res) => {
-  console.log("Urban Dictionary request received");
-  console.log(req.url)
+  const q = req.query.term;
+  const raw = Array.isArray(q) ? q[0] : q;
+  const term = typeof raw === 'string' ? raw.trim() : '';
+
+  console.log('Urban Dictionary request received');
+  console.log('term:', term || '(missing)');
+
+  if (!term) {
+    res
+      .status(400)
+      .type('text/plain')
+      .send('Missing term. Try entering a term after the urban command!');
+    return;
+  }
+
+  (async () => {
+    const result = await urbanLookup(term);
+    res.type('text/plain').send(result.message);
+  })();
 })
 
 app.get('/count', (req, res) => {

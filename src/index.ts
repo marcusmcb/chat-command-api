@@ -32,10 +32,11 @@ app.get('/urban', (req, res) => {
   console.log('term:', term || '(missing)');
 
   if (!term) {
+    // StreamElements often won’t post urlfetch output on non-200 responses.
+    // Return 200 with a helpful message so chat always gets feedback.
     res
-      .status(400)
       .type('text/plain')
-      .send('Missing term. Try entering a term after the urban command!');
+      .send('Try the urban command again, but enter a term or phrase to search for when you do!');
     return;
   }
 

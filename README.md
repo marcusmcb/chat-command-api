@@ -30,6 +30,16 @@ Set these environment variables to enable `/urban` lookups:
 - URBAN_DICTIONARY_API_KEY
 - URBAN_DICTIONARY_API_HOST
 
+## Bot-side `!urban` handler (recommended)
+
+StreamElements sometimes won’t execute `$(urlfetch ...)` when no args are provided, which means `!urban` (with no term) may not hit the API at all.
+
+To ensure chat always responds (including the “missing term” message), enable the bot-side handler:
+
+- TWITCH_ENABLE_URBAN_BOT_COMMAND=true
+
+If you enable this, disable your StreamElements `!urban` command to avoid double responses.
+
 ## Deploy on Heroku
  - Override target channel (must be configured): /count?duration=10&channel=otherchannel
 Configure env vars in Heroku config vars (Settings -> Config Vars) for the Twitch bot.

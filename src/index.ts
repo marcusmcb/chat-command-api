@@ -24,6 +24,10 @@ app.get('/strain', (_req, res) => {
 });
 
 app.get('/urban', (req, res) => {
+  console.log("--------------------------------")
+  console.log("Urban Dictionary request received: ")
+  console.log(req.query)
+  console.log("--------------------------------")
   const q = req.query.term;
   const raw = Array.isArray(q) ? q[0] : q;
   const term = typeof raw === 'string' ? raw.trim() : '';

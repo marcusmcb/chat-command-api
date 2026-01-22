@@ -39,11 +39,21 @@ app.get('/askgpt', async (req, res) => {
 	const raw = Array.isArray(q) ? q[0] : q
 	const prompt = typeof raw === 'string' ? raw.trim() : ''
 
+	const looksLikeUnexpandedTemplate =
+		prompt === '$(querystring)' ||
+		prompt === '${querystring}' ||
+		prompt === '$(query)' ||
+		prompt === '${query}'
+
 	// StreamElements may not post output on non-200, so keep this 200.
-	if (!prompt) {
+	if (!prompt || looksLikeUnexpandedTemplate) {
 		res
 			.type('text/plain')
-			.send('Please provide a prompt for me to respond to!')
+			.send(
+				looksLikeUnexpandedTemplate
+					? 'Your StreamElements command is passing the literal template instead of the chat text. Update the command to pass the full message after !askgpt as the prompt.'
+					: 'Please provide a prompt for me to respond to!',
+			)
 		return
 	}
 

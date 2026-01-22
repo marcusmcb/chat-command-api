@@ -11,7 +11,7 @@ $(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/count?duration=$(
 
 AskGPT command message:
 
-$(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=$(querystring))
+$(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=${querystring})
 
 Urban Dictionary command message:
 

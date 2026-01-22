@@ -43,21 +43,33 @@ app.get('/askgpt', async (req, res) => {
 		prompt === '$(querystring)' ||
 		prompt === '${querystring}' ||
 		prompt === '$(query)' ||
+		prompt === '${query}' ||
+		prompt === '$(1+)' ||
+		prompt === '${1+}' ||
+		prompt === '$(1)' ||
+		prompt === '${1}' ||
+		prompt === '$(query)' ||
 		prompt === '${query}'
 
+	// Fallbacks if you choose a different param name in StreamElements
+	const q2 = req.query.query ?? req.query.text
+	const raw2 = Array.isArray(q2) ? q2[0] : q2
+	const prompt2 = typeof raw2 === 'string' ? raw2.trim() : ''
+	const finalPrompt = prompt || prompt2
+
 	// StreamElements may not post output on non-200, so keep this 200.
-	if (!prompt || looksLikeUnexpandedTemplate) {
+	if (!finalPrompt || looksLikeUnexpandedTemplate) {
 		res
 			.type('text/plain')
 			.send(
 				looksLikeUnexpandedTemplate
-					? 'Your StreamElements command is passing the literal template instead of the chat text. Update the command to pass the full message after !askgpt as the prompt.'
+					? 'StreamElements is passing a literal template (not your chat text). Use StreamElements argument variables like ${query} or ${1+} inside ${urlfetch ...}.'
 					: 'Please provide a prompt for me to respond to!',
 			)
 		return
 	}
 
-	const result = await getChatGPTResponse(prompt)
+	const result = await getChatGPTResponse(finalPrompt)
 	res.type('text/plain').send(result.message)
 })
 

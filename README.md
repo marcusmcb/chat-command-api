@@ -11,7 +11,13 @@ $(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/count?duration=$(
 
 AskGPT command message:
 
-$(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=${querystring})
+Use StreamElements argument variables (not `${querystring}`):
+
+${urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=${query}}
+
+If you want “everything after the command”, this variant is commonly supported:
+
+${urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=${1+}}
 
 Urban Dictionary command message:
 
@@ -42,6 +48,14 @@ Set these environment variables to enable `/askgpt`:
 Optional tuning:
 - OPENAI_MODEL (default: gpt-4o-mini)
 - OPENAI_MAX_TOKENS (default: 120)
+
+### Recommended: bot-side `!askgpt`
+
+If StreamElements is sending the literal `${querystring}` (instead of the user’s prompt) to `/askgpt`, enable the bot-side handler so prompts are read directly from Twitch chat:
+
+- TWITCH_ENABLE_ASKGPT_BOT_COMMAND=true
+
+If you enable this, disable your StreamElements `!askgpt` command to avoid duplicate replies.
 
 ## Bot-side `!urban` handler (recommended)
 

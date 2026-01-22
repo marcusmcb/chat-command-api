@@ -1,5 +1,6 @@
 import tmi from 'tmi.js';
 import { urbanLookup } from './urban';
+import { getChatGPTResponse } from './askgpt';
 
 let client: tmi.Client | null = null;
 let allowedChannels: string[] = [];
@@ -36,6 +37,36 @@ export function initTwitchClient() {
   // NOTE: We intentionally do NOT handle `!urban` from Twitch chat here.
   // The intended architecture is: StreamElements triggers `urlfetch` to this API and posts the result.
   // If this bot also responds to `!urban`, you will see duplicate messages (StreamElements + this bot).
+
+  // Optional: handle !askgpt directly in chat.
+  // This avoids StreamElements urlfetch templating issues and gives immediate chat replies.
+  if (process.env.TWITCH_ENABLE_ASKGPT_BOT_COMMAND === 'true') {
+    const lastHandledAtByChannel = new Map<string, number>();
+
+    client.on('message', async (channel, _tags, message, self) => {
+      if (self) return;
+      const text = message.trim();
+      if (!text.toLowerCase().startsWith('!askgpt')) return;
+
+      const now = Date.now();
+      const key = channel.toLowerCase();
+      const last = lastHandledAtByChannel.get(key) ?? 0;
+      if (now - last < 2500) return;
+      lastHandledAtByChannel.set(key, now);
+
+      const prompt = text.split(/\s+/).slice(1).join(' ').trim();
+      if (!prompt) {
+        await client?.say(channel, 'Please provide a prompt for me to respond to!');
+        return;
+      }
+
+      // Basic abuse guard: keep prompts short for chat + cost control
+      const cappedPrompt = prompt.length > 400 ? `${prompt.slice(0, 400).trim()}...` : prompt;
+
+      const result = await getChatGPTResponse(cappedPrompt);
+      await client?.say(channel, result.message);
+    });
+  }
 
   client.connect().catch((err) => {
     console.error('Failed to connect Twitch client:', err);

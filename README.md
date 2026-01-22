@@ -9,6 +9,10 @@ Command message:
 
 $(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/count?duration=$(1))
 
+AskGPT command message:
+
+$(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/askgpt?prompt=$(querystring))
+
 Urban Dictionary command message:
 
 $(urlfetch https://chat-command-api-f314fc32259e.herokuapp.com/urban?term=$(querystring))
@@ -29,6 +33,15 @@ Without these, the API will still respond but won’t post messages in chat.
 Set these environment variables to enable `/urban` lookups:
 - URBAN_DICTIONARY_API_KEY
 - URBAN_DICTIONARY_API_HOST
+
+## OpenAI (AskGPT)
+
+Set these environment variables to enable `/askgpt`:
+- OPENAI_API_KEY
+
+Optional tuning:
+- OPENAI_MODEL (default: gpt-4o-mini)
+- OPENAI_MAX_TOKENS (default: 120)
 
 ## Bot-side `!urban` handler (recommended)
 

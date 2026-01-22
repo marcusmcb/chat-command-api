@@ -7,6 +7,7 @@ import {
 	getAllowedChannels,
 } from './twitchClient'
 import { urbanLookup } from './urban'
+import { getChatGPTResponse } from './askgpt'
 
 // Load .env locally (Heroku provides env vars in production)
 if (process.env.NODE_ENV !== 'production') {
@@ -26,6 +27,28 @@ app.get('/strain', (_req, res) => {
 	console.log('Strain requested: ', random)
 	console.log('--------------------------------')
 	res.send(random)
+})
+
+app.get('/askgpt', async (req, res) => {
+	console.log('--------------------------------')
+	console.log('AskGPT request received:')
+	console.log(req.query)
+	console.log('--------------------------------')
+
+	const q = req.query.prompt ?? req.query.q
+	const raw = Array.isArray(q) ? q[0] : q
+	const prompt = typeof raw === 'string' ? raw.trim() : ''
+
+	// StreamElements may not post output on non-200, so keep this 200.
+	if (!prompt) {
+		res
+			.type('text/plain')
+			.send('Please provide a prompt for me to respond to!')
+		return
+	}
+
+	const result = await getChatGPTResponse(prompt)
+	res.type('text/plain').send(result.message)
 })
 
 app.get('/urban', (req, res) => {
@@ -63,7 +86,7 @@ app.listen(PORT, () => {
 	console.log('--------------------------------')
 })
 
-app.get('/count', (req, res) => {
+// app.get('/count', (req, res) => {
 // 	// Accepts: GET /count?duration=$(1) from StreamElements
 // 	// duration examples: 10, 30s, 2m, 1h
 

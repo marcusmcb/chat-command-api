@@ -41,9 +41,18 @@ To use this code to create and run your own Twitch chat command API for use with
 
 The following env values are used in this project
 
-* URBAN_DICTIONARY_API_KEY
-* URBAN_DICTIONARY_API_HOST
-* OPENAI_API_KEY
+* `TWITCH_OAUTH_TOKEN`
+* `TWITCH_CHANNELS`
+* `TWITCH_USERNAME`
+* `URBAN_DICTIONARY_API_KEY`
+* `URBAN_DICTIONARY_API_HOST`
+* `OPENAI_API_KEY`
+
+The Twitch OAuth token is required in order to connect the script to Twitch's chat element, and the Twitch Username value is the account used when generating the token.
+
+The Twitch Channels value is used to determine which channel(s) you'd like your API to respond to.
+
+More information on creating a Twitch OAuth access token can be found <a href="https://twitchtokengenerator.com/">here</a>.  When prompted, selected "bot chat token".
 
 More information on creating and using an OpenAI developer key can be found <a href="https://platform.openai.com/docs/quickstart">here</a>.
 
